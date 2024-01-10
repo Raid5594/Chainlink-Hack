@@ -1,17 +1,17 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.19;
 
 import {IRouterClient} from "@chainlink/contracts-ccip/src/v0.8/ccip/interfaces/IRouterClient.sol";
 import {OwnerIsCreator} from "@chainlink/contracts-ccip/src/v0.8/shared/access/OwnerIsCreator.sol";
 import {Client} from "@chainlink/contracts-ccip/src/v0.8/ccip/libraries/Client.sol";
 import {CCIPReceiver} from "@chainlink/contracts-ccip/src/v0.8/ccip/applications/CCIPReceiver.sol";
 import "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
 
+import "./utils/Counters.sol";
 import "./simpleSwap.sol";
 
 /// @title - Portfolio Manager contract that uses CCIP to create a Token Index Portfolio by accessing liquidity cross chain
-contract PortfolioManager is OwnerIsCreator, CCIPReceiver {
+contract PriceOracleReceiver is OwnerIsCreator, CCIPReceiver {
     using Counters for Counters.Counter;
     // Custom errors to provide more descriptive revert messages.
     error NotEnoughBalance(uint256 currentBalance, uint256 calculatedFees); // Used to make sure contract has enough balance.
@@ -312,7 +312,7 @@ contract PortfolioManager is OwnerIsCreator, CCIPReceiver {
                 tokenAmounts: new Client.EVMTokenAmount[](0), // Empty array aas no tokens are transferred
                 extraArgs: Client._argsToBytes(
                     // Additional arguments, setting gas limit and non-strict sequencing mode
-                    Client.EVMExtraArgsV1({gasLimit: 600_000, strict: false})
+                    Client.EVMExtraArgsV1({gasLimit: 600_000})
                 ),
                 // Set the feeToken to a feeTokenAddress, indicating specific asset will be used for fees
                 feeToken: _feeTokenAddress
@@ -447,7 +447,7 @@ contract PortfolioManager is OwnerIsCreator, CCIPReceiver {
             tokenAmounts: tokenAmounts, // The amount and type of token being transferred
             extraArgs: Client._argsToBytes(
                 // Additional arguments, setting gas limit and non-strict sequencing mode
-                Client.EVMExtraArgsV1({gasLimit: 600_000, strict: false})
+                Client.EVMExtraArgsV1({gasLimit: 600_000})
             ),
             // Set the feeToken to a feeTokenAddress, indicating specific asset will be used for fees
             feeToken: _feeTokenAddress

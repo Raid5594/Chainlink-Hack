@@ -1,17 +1,12 @@
-## Foundry
+## Cross-Chain Portfolio Manager Documentation
+The main purpose of these MVP contracts is to present a way to manage token portfolios cross-chain from a single contract in a decentralized manner. 
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
-
-Foundry consists of:
-
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
-
-## Documentation
-
-https://book.getfoundry.sh/
+Contracts consist of:
+-   **MockToken**: Simple Mock ERC20 token for testing purposes.
+-   **SimpleSwap**: Mock implementation of DEX, which fetches latest tokens prices using Chainlink Data Feed; used for testing on testnets, as tokens with high liqudity are not yet supported on mainnet 
+-   **PriceOracleReceiver**: Contract to be deployed on target chain to fetch the latest price of tokens of interest.
+-   **SwapperOracleReceiver**: Contract to be deployed on target chain to receive the sent tokens and orders, process swaps, and return the refund to origin chain.
+-   **PriceOracleReceiver**: The main contract, which manages the portfolio funds. It implements two main pieces of cross-chain functionality: ability to fetch latest prices of tokens available on remote chains, and delegating orders to buy or sell target tokens on remote chains. The contract allows to perform three core actions: formation of cross-chain portfolio, redemption of the portfolio, and rebalancing of weights cross-chain.
 
 ## Usage
 
@@ -43,12 +38,6 @@ $ forge snapshot
 
 ```shell
 $ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
 ```
 
 ### Cast
